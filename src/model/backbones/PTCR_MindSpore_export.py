@@ -90,6 +90,10 @@ class Mlp(nn.Cell):
         x = self.proj(x) + x
         x = self.proj_act(x)
         x = self.proj_bn(x)
+        # print('didi')
+        # print(x.shape)
+        # print('here is conv2')
+        # print(self.conv2)
         x = self.conv2(x)
         x = x.flatten(start_dim=2).permute(0, 2, 1)
         x = self.drop(x)
@@ -237,6 +241,7 @@ class InstanceNorm2d(nn.Cell):
         self.cast2fp32 = ms.ops.operations.Cast()
 
     def construct(self, x):
+        # print(self.truegamma)
         true_gamma = self.gamma.value().view(1,self.channel,1,1)
         true_beta = self.beta.value().view(1,self.channel,1,1)
         true_eps = self.eps.value().view(1,self.channel,1,1)
@@ -247,7 +252,6 @@ class InstanceNorm2d(nn.Cell):
         inv = self.rsqrt(variance)
         normalized = self.sub(x, mean) * inv
         x_IN = self.add(self.mul(true_gamma, normalized), true_beta)
-        x_IN = x_IN.astype(ms.float16)
         return x_IN
 
 
@@ -384,9 +388,11 @@ class ConvPatch(nn.Cell):
     def construct(self, x):
         x = self.conv(x)
         _, _, H, W = x.shape
-        
+        # print('before  = x.flatten(start_dim=2).swapaxes(1, 2)')
+        # print(x.shape)
         x = x.flatten(start_dim=2).swapaxes(1, 2)
-        
+        # print('after  = x.flatten(start_dim=2).swapaxes(1, 2)')
+        # print(x.shape)
         x = self.norm(x)
 
         return x, H, W
@@ -398,7 +404,9 @@ class AuxiliaryEmbedding():
         self.B = B
         self.D = D
         self.out = self.get_encode(cam_label, view_label)
-        
+        # print(cam_label)
+        # print(view_label)
+        # print(123123123)
     def __call__(self):
         return self.out
 
@@ -408,7 +416,11 @@ class AuxiliaryEmbedding():
         aux_embed = ms.ops.zeros(self.B)
 
         for C, T in enumerate(arg):
+            # aux_embed += torch.sin((C + 1) / 10000 ** (2 * T / self.D))
+            # print(C)
+            # print(T)
             aux_embed += ms.ops.sin((C + 1) / 10000 ** (2 * T / self.D))
+
         return aux_embed
 
 
@@ -450,6 +462,7 @@ class PTCR(nn.Cell):
 
         self.global_pool = GeM()
 
+        # print(self.global_pool.get_parameters())
         self.apply(self._init_weights)
 
     def _init_weights(self, m):
@@ -474,8 +487,11 @@ class PTCR(nn.Cell):
                 # m.bias.data.zero_()
                 m.bias.set_data(initializer(Zero(), m.bias.shape, m.bias.dtype))
 
+
+
     def construct(self, x, label=None, cam_label=None, view_label=None ):
-        
+        # print('before feature, maps = self.forward_features(x, label, view_label, cam_label)')
+        # print(x.shape)
         B = x.shape[0]
         maps = []
         for i in range(self.num_stages):
@@ -484,9 +500,15 @@ class PTCR(nn.Cell):
             norm = getattr(self, f"norm{i + 1}")
             x, H, W = patch_embed(x)
             if i == 0:
-                D = x.shape[2]                
+                D = x.shape[2]
+                # print(1231232)
                 aux_embed = AuxiliaryEmbedding(B, D, cam_label, view_label)
+
                 for j in range(B):
+                    # print(aux_embed.out[j])
+                    # print("")
+                    # print("")
+                    # print("")
                     x[j] += 0.55 * aux_embed.out[j]
             for blk in block:
                 x = blk(x, H, W)

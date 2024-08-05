@@ -6,7 +6,7 @@ import copy
 import sys
 import os
 from mindspore.common.initializer import initializer, Constant, HeNormal, Normal, Zero, One
-from ..model.backbones.PTCR_MindSpore import PTCR
+from ..model.backbones.PTCR_MindSpore_export import PTCR
 from ..utils.metric_learning import Arcface, Cosface, AMSoftmax, CircleLoss
 from ..model.layers.gem_pool_MindSpore import GeneralizedMeanPoolingP as GeM
 

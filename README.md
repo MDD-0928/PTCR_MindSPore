@@ -1,13 +1,13 @@
 # PTCR_MindSpore
 
-This is a MindSpore implementation of the PTCR proposed in *[Pyramidal Transformer with Conv-Patchify for Person Re-identification.](https://dl.acm.org/doi/10.1145/3503161.3548770)*
+This is a MindSpore **Ascend** implementation of the PTCR proposed in *[Pyramidal Transformer with Conv-Patchify for Person Re-identification.](https://dl.acm.org/doi/10.1145/3503161.3548770)*
 
 **PLEASE MOVE TO “final” BRANCH for THE Ascend VERSION！！！**
 
 ##  Environment
 
 - Python 3.8
-- MindSpore 2.0.0 (GPU)
+- MindSpore 2.0.0 (Ascend)
 - mindcv
 
 ## Usage
@@ -15,7 +15,7 @@ This is a MindSpore implementation of the PTCR proposed in *[Pyramidal Transform
 - Organize datasets as below
 
 ```
-├──"DATASETS.ROOT_DIR" in /src/config/defaults.py
+├──"DATASETS.ROOT_DIR" in /src/PTCR_MindSpore.yaml
    ├──market1501
       ├──Market-1501
          ├──bounding_box_train
@@ -41,8 +41,8 @@ This is a MindSpore implementation of the PTCR proposed in *[Pyramidal Transform
          ├──list_query.txt
 ```
 
-- Set your own "OUTPUT_DIR " in /src/config/defaults.py
-- Set your own "DATASETS.NAMES " in /src/config/defaults.py：{market1501、dukemtmcreid、cuhk03、msmt17}
+- Set your own "OUTPUT_DIR " in /src/PTCR_MindSpore.yaml
+- Set your own "DATASETS.NAMES " in /src/PTCR_MindSpore.yaml：{market1501、dukemtmcreid、cuhk03、msmt17}
 - Train
 
 ```
@@ -54,3 +54,7 @@ python train.py
 ```
 python test.py
 ```
+
+- Checkpoint
+- you can download the pretrained weight for train from [Google Drive](https://drive.google.com/file/d/1xOE66uiuE_mMgV1oO4DdkSL2gjhjVDFk/view?usp=sharing)
+- you can download the finetuned weight for evaluation from [Google Drive](https://drive.google.com/file/d/1QR__rOaaeAtL62xL1EogziF2xEGPG1W9/view?usp=sharing)
